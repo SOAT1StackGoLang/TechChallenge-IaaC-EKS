@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: express-test-svc
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-name: express-test-svc
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    #service.beta.kubernetes.io/aws-load-balancer-healthcheck-healthy-threshold: 10
+    #service.beta.kubernetes.io/aws-load-balancer-healthcheck-interval: 300
+    #service.beta.kubernetes.io/aws-load-balancer-healthcheck-timeout: 60
+    #service.beta.kubernetes.io/aws-load-balancer-healthcheck-unhealthy-threshold: 10
+
+spec:
+  selector:
+    app: express-test
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080

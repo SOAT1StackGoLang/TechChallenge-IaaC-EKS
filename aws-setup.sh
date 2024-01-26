@@ -52,25 +52,28 @@ access_key_cmd=$(cat ~/.aws/credentials | grep aws_access_key)
 access_key_id=$(echo $access_key_cmd | sed 's/.*key_id=\(.*\)/\1/')
 secret_access_key_cmd=$(cat ~/.aws/credentials | grep aws_secret_access_key)
 secret_access_key=$(echo $secret_access_key_cmd | sed 's/.*secret_access_key=\(.*\)/\1/')
+session_token_cmd=$(cat ~/.aws/credentials | grep aws_session_token)
+session_token=$(echo $session_token_cmd | sed 's/.*key_id=\(.*\)/\1/')
 
 ## using github cli to create the variables for the github repo secrets for the access key and secret key to current repo
 # create the secret for the access key
 # get the current repo name with https://HOST/OWNER/REPO
-#repo_url=$(git config --get remote.origin.url)
-#repo_name=$(echo $repo_url | sed 's/.*github.com\/\(.*\)\.git/\1/')
+repo_url=$(git config --get remote.origin.url)
+repo_name=$(echo $repo_url | sed 's/.*github.com\/\(.*\)\.git/\1/')
 
 
 ## WARNING ##
 ## Only run this gh command if you want to change the default AWS ACCOUNT for the repo
 ## Uncomment the following lines to change the default AWS ACCOUNT for the repo
-#gh secret set AWS_ACCESS_KEY_ID -b $access_key_id --repo=github.com/$repo_name
-#gh secret set AWS_SECRET_ACCESS_KEY -b $secret_access_key --repo=github.com/$repo_name
+gh secret set AWS_ACCESS_KEY_ID -b $access_key_id --repo=github.com/$repo_name
+gh secret set AWS_SECRET_ACCESS_KEY -b $secret_access_key --repo=github.com/$repo_name
+gh secret set AWS_SESSION_TOKEN -b $session_token --repo=github.com/$repo_name
 ## WARNING ##
 
 # echo the access key and secret key env variables
-echo "Save the following env variable on a secure place as they will only be shown once"
-echo "export AWS_ACCESS_KEY_ID=$access_key_id"
-echo "export AWS_SECRET_ACCESS_KEY=$secret_access_key"
+#echo "Save the following env variable on a secure place as they will only be shown once"
+#echo "export AWS_ACCESS_KEY_ID=$access_key_id"
+#echo "export AWS_SECRET_ACCESS_KEY=$secret_access_key"
 
 # test the access key and secret key
 echo "testing the access key and secret key"

@@ -53,7 +53,7 @@ access_key_id=$(echo $access_key_cmd | sed 's/.*key_id=\(.*\)/\1/')
 secret_access_key_cmd=$(cat ~/.aws/credentials | grep aws_secret_access_key)
 secret_access_key=$(echo $secret_access_key_cmd | sed 's/.*secret_access_key=\(.*\)/\1/')
 session_token_cmd=$(cat ~/.aws/credentials | grep aws_session_token)
-session_token=$(echo $session_token_cmd | sed 's/.*key_id=\(.*\)/\1/')
+session_token=$(echo $session_token_cmd | sed 's/.*token=\(.*\)/\1/')
 
 ## using github cli to create the variables for the github repo secrets for the access key and secret key to current repo
 # create the secret for the access key

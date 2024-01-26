@@ -27,6 +27,7 @@ on:
         TF_STATE_KEY:
           description: 'Terraform State Key'
           required: false
+          default: 's1sg-tc.tfstate'
 
 jobs:
   destroy:

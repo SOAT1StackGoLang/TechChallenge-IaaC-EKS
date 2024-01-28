@@ -43,34 +43,6 @@ resource "aws_apigatewayv2_stage" "apigw_stage" {
   depends_on  = [aws_apigatewayv2_api.api]
 }
 
-# Search for the Load Balancer created by the K8s service
-data "aws_lb" "eks_app" {
-  #name = "aec7ece9930bf48a58d769d170a47238"
-  tags = {
-    "kubernetes.io/service-name" = "${var.project_name}/${var.lb_service_name}"
-    "kubernetes.io/cluster/${var.project_name}" = "owned"
-  }
-}
-
-# Get the Listener of the Load Balancer created by this Load Balancer
-data "aws_lb_listener" "eks_app" {
-  load_balancer_arn = "${data.aws_lb.eks_app.arn}" 
-  port              = var.lb_service_port
-}
-
-# Create the API Gateway HTTP_PROXY integration between the created API and the private load balancer via the VPC Link.
-resource "aws_apigatewayv2_integration" "api_integration" {
-  api_id                 = aws_apigatewayv2_api.api.id
-  integration_type       = "HTTP_PROXY"
-  integration_uri        = data.aws_lb_listener.eks_app.arn
-  integration_method     = "ANY"
-  connection_type        = "VPC_LINK"
-  connection_id          = aws_apigatewayv2_vpc_link.api_vpc_link.id
-  payload_format_version = "1.0"
-  depends_on = [aws_apigatewayv2_vpc_link.api_vpc_link,
-                aws_apigatewayv2_api.api
-               ]
-}
 
 # Create authorizer pointing to Lambda (clear authorizer caching and remove identity resources)
 resource "aws_apigatewayv2_authorizer" "api_authorizer" {
@@ -85,15 +57,85 @@ resource "aws_apigatewayv2_authorizer" "api_authorizer" {
 }
 
 
-# API GW route with ANY method
-resource "aws_apigatewayv2_route" "apigw_route" {
-  api_id             = aws_apigatewayv2_api.api.id
-  route_key          = "ANY /{proxy+}"
-  target             = "integrations/${aws_apigatewayv2_integration.api_integration.id}"
-  authorization_type = "CUSTOM"
-  authorizer_id      = aws_apigatewayv2_authorizer.api_authorizer.id
-  depends_on         = [aws_apigatewayv2_integration.api_integration]
+# Search for the Load Balancer created by the K8s service for orders micorservice
+data "aws_lb" "eks_orders" {
+  #name = "aec7ece9930bf48a58d769d170a47238"
+  tags = {
+    "kubernetes.io/service-name" = "${var.project_name}/${var.lb_service_name_orders}"
+    "kubernetes.io/cluster/${var.project_name}" = "owned"
+  }
+}
+
+# Get the Listener of the Load Balancer created by this Load Balancer
+data "aws_lb_listener" "eks_orders" {
+  load_balancer_arn = "${data.aws_lb.eks_orders.arn}" 
+  port              = var.lb_service_port_orders
+}
+
+# Create the API Gateway HTTP_PROXY integration between the created API and the private load balancer via the VPC Link.
+resource "aws_apigatewayv2_integration" "api_integration_orders" {
+  api_id                 = aws_apigatewayv2_api.api.id
+  integration_type       = "HTTP_PROXY"
+  integration_uri        = data.aws_lb_listener.eks_orders.arn
+  integration_method     = "ANY"
+  connection_type        = "VPC_LINK"
+  connection_id          = aws_apigatewayv2_vpc_link.api_vpc_link.id
+  payload_format_version = "1.0"
+  depends_on = [aws_apigatewayv2_vpc_link.api_vpc_link,
+                aws_apigatewayv2_api.api
+               ]
 }
 
 
+# API GW route with ANY method
+resource "aws_apigatewayv2_route" "apigw_route_orders" {
+  api_id             = aws_apigatewayv2_api.api.id
+  route_key          = "ANY /{proxy+}"
+  target             = "integrations/${aws_apigatewayv2_integration.api_integration_orders.id}"
+  authorization_type = "CUSTOM"
+  authorizer_id      = aws_apigatewayv2_authorizer.api_authorizer.id
+  depends_on         = [aws_apigatewayv2_integration.api_integration_orders]
+}
+
+
+
+
+# Search for the Load Balancer created by the K8s service for production micorservice
+data "aws_lb" "eks_production" {
+  #name = "aec7ece9930bf48a58d769d170a47238"
+  tags = {
+    "kubernetes.io/service-name" = "${var.project_name}/${var.lb_service_name_production}"
+    "kubernetes.io/cluster/${var.project_name}" = "owned"
+  }
+}
+
+# Get the Listener of the Load Balancer created by this Load Balancer
+data "aws_lb_listener" "eks_production" {
+  load_balancer_arn = "${data.aws_lb.eks_production.arn}" 
+  port              = var.lb_service_port_production
+}
+
+# Create the API Gateway HTTP_PROXY integration between the created API and the private load balancer via the VPC Link.
+resource "aws_apigatewayv2_integration" "api_integration_production" {
+  api_id                 = aws_apigatewayv2_api.api.id
+  integration_type       = "HTTP_PROXY"
+  integration_uri        = data.aws_lb_listener.eks_production.arn
+  integration_method     = "ANY"
+  connection_type        = "VPC_LINK"
+  connection_id          = aws_apigatewayv2_vpc_link.api_vpc_link.id
+  payload_format_version = "1.0"
+  depends_on = [aws_apigatewayv2_vpc_link.api_vpc_link,
+                aws_apigatewayv2_api.api
+               ]
+}
+
+# API GW route with ANY method
+resource "aws_apigatewayv2_route" "apigw_route_production" {
+  api_id             = aws_apigatewayv2_api.api.id
+  route_key          = "ANY /product/{proxy+}"
+  target             = "integrations/${aws_apigatewayv2_integration.api_integration_production.id}"
+  authorization_type = "CUSTOM"
+  authorizer_id      = aws_apigatewayv2_authorizer.api_authorizer.id
+  depends_on         = [aws_apigatewayv2_integration.api_integration_production]
+}
 

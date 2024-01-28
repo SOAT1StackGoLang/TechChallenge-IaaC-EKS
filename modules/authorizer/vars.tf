@@ -25,17 +25,28 @@ variable "environment" {
 }
 
 
-variable "lb_service_name" {
+variable "lb_service_name_orders" {
   type = string
-  description = "Name of the Load Balancer K8s service that exposes the app"
+  description = "Name of the Load Balancer K8s service that exposes the orders microservices"
 }
 
 
-variable "lb_service_port" {
+variable "lb_service_port_orders" {
   type = number
-  description = "Port exposed of the Load Balancer K8s service assocaited to the app"
+  description = "Port exposed of the Load Balancer K8s service associated to the orders microservices"
 }
 
+
+variable "lb_service_name_production" {
+  type = string
+  description = "Name of the Load Balancer K8s service that exposes the production microservices"
+}
+
+
+variable "lb_service_port_production" {
+  type = number
+  description = "Port exposed of the Load Balancer K8s service associated to the production microservices"
+}
 
 variable "cognito_user_name" {
   type    = string

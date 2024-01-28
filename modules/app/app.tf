@@ -12,9 +12,10 @@ terraform {
 locals {
   namespace = var.project_name
 
-  msvc_orders_image     = "ghcr.io/soat1stackgolang/msvc-orders:debug-develop"
-  msvc_payments_image   = "ghcr.io/soat1stackgolang/msvc-payments:debug-develop"
-  msvc_production_image = "ghcr.io/soat1stackgolang/msvc-production:debug-develop"
+  msvc_orders_init_image = "ghcr.io/soat1stackgolang/msvc-orders:migs-debug-develop"
+  msvc_orders_image      = "ghcr.io/soat1stackgolang/msvc-orders:debug-develop"
+  msvc_payments_image    = "ghcr.io/soat1stackgolang/msvc-payments:debug-develop"
+  msvc_production_image  = "ghcr.io/soat1stackgolang/msvc-production:debug-develop"
 
   lb_service_name_orders     = "lb-orders-svc"
   lb_service_port_orders     = 8080
@@ -119,6 +120,53 @@ spec:
       labels:
         app: msvc-orders
     spec:
+      initContainers:
+        - name: init
+          image: ${local.msvc_orders_init_image}
+          imagePullPolicy: Always
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 10000
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 25Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          env:
+            - name: PORT
+              value: "8080"
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: ${var.project_name}-secret
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: ${var.project_name}-secret
+                  key: DB_PORT
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ${var.project_name}-secret
+                  key: DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ${var.project_name}-secret
+                  key: DB_PASSWORD
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: ${var.project_name}-secret
+                  key: DB_NAME
       containers:
         - name: msvc-orders
           image: ${local.msvc_orders_image}
@@ -140,7 +188,7 @@ spec:
               memory: 100Mi
           livenessProbe:
             tcpSocket:
-              port: ${local.msvc_orders_port}
+              port: 8080
             initialDelaySeconds: 5
             timeoutSeconds: 5
             successThreshold: 1
@@ -148,7 +196,7 @@ spec:
             periodSeconds: 10
           readinessProbe:
             tcpSocket:
-              port: ${local.msvc_orders_port}
+              port: 8080
             initialDelaySeconds: 5
             timeoutSeconds: 2
             successThreshold: 1
@@ -191,7 +239,7 @@ spec:
                   name: ${var.project_name}-secret
                   key: DB_NAME
           ports:
-            - containerPort: ${local.msvc_orders_port}
+            - containerPort: 8080
               name: web
           
       restartPolicy: Always
@@ -214,7 +262,7 @@ spec:
   ports:
   - protocol: TCP
     port: ${local.msvc_orders_port}
-    targetPort: ${local.msvc_orders_port}
+    targetPort: 8080
 
 YAML
 }
@@ -270,7 +318,7 @@ spec:
               memory: 100Mi
           livenessProbe:
             tcpSocket:
-              port: ${local.msvc_payments_port}
+              port: 8080
             initialDelaySeconds: 5
             timeoutSeconds: 5
             successThreshold: 1
@@ -278,7 +326,7 @@ spec:
             periodSeconds: 10
           readinessProbe:
             tcpSocket:
-              port: ${local.msvc_payments_port}
+              port: 8080
             initialDelaySeconds: 5
             timeoutSeconds: 2
             successThreshold: 1
@@ -296,7 +344,7 @@ spec:
             - name: PRODUCTION_URI
               value: "${local.msvc_production_uri}"
           ports:
-            - containerPort: ${local.msvc_payments_port}
+            - containerPort: 8080
               name: web
           
       restartPolicy: Always
@@ -319,7 +367,7 @@ spec:
   ports:
   - protocol: TCP
     port: ${local.msvc_payments_port}
-    targetPort: ${local.msvc_payments_port}
+    targetPort: 8080
 
 YAML
 }
@@ -376,7 +424,7 @@ spec:
               memory: 100Mi
           livenessProbe:
             tcpSocket:
-              port: ${local.msvc_production_port}
+              port: 8080
             initialDelaySeconds: 5
             timeoutSeconds: 5
             successThreshold: 1
@@ -384,7 +432,7 @@ spec:
             periodSeconds: 10
           readinessProbe:
             tcpSocket:
-              port: ${local.msvc_production_port}
+              port: 8080
             initialDelaySeconds: 5
             timeoutSeconds: 2
             successThreshold: 1
@@ -402,7 +450,7 @@ spec:
             - name: PRODUCTION_URI
               value: "${local.msvc_production_uri}"
           ports:
-            - containerPort: ${local.msvc_production_port}
+            - containerPort: 8080
               name: web
           
       restartPolicy: Always
@@ -425,7 +473,7 @@ spec:
   ports:
   - protocol: TCP
     port: ${local.msvc_production_port}
-    targetPort: ${local.msvc_production_port}
+    targetPort: 8080
 
 YAML
 }
@@ -455,7 +503,7 @@ spec:
   ports:
   - protocol: TCP
     port: ${local.lb_service_port_orders}
-    targetPort: ${local.msvc_orders_port}
+    targetPort: 8080
 
 YAML
 }
@@ -480,7 +528,7 @@ spec:
   ports:
   - protocol: TCP
     port: ${local.lb_service_port_production}
-    targetPort: ${local.msvc_production_port}
+    targetPort: 8080
 
 YAML
 }

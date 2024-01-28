@@ -59,7 +59,6 @@ resource "aws_apigatewayv2_authorizer" "api_authorizer" {
 
 # Search for the Load Balancer created by the K8s service for orders micorservice
 data "aws_lb" "eks_orders" {
-  #name = "aec7ece9930bf48a58d769d170a47238"
   tags = {
     "kubernetes.io/service-name" = "${var.project_name}/${var.lb_service_name_orders}"
     "kubernetes.io/cluster/${var.project_name}" = "owned"
@@ -102,7 +101,6 @@ resource "aws_apigatewayv2_route" "apigw_route_orders" {
 
 # Search for the Load Balancer created by the K8s service for production micorservice
 data "aws_lb" "eks_production" {
-  #name = "aec7ece9930bf48a58d769d170a47238"
   tags = {
     "kubernetes.io/service-name" = "${var.project_name}/${var.lb_service_name_production}"
     "kubernetes.io/cluster/${var.project_name}" = "owned"
@@ -132,7 +130,7 @@ resource "aws_apigatewayv2_integration" "api_integration_production" {
 # API GW route with ANY method
 resource "aws_apigatewayv2_route" "apigw_route_production" {
   api_id             = aws_apigatewayv2_api.api.id
-  route_key          = "ANY /product/{proxy+}"
+  route_key          = "ANY /production/{proxy+}"
   target             = "integrations/${aws_apigatewayv2_integration.api_integration_production.id}"
   authorization_type = "CUSTOM"
   authorizer_id      = aws_apigatewayv2_authorizer.api_authorizer.id

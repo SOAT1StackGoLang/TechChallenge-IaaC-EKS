@@ -71,17 +71,10 @@ module "eks_cluster" {
 }
 
 
-
-
 # Deploy K8 manisfests via kubectl
 module "app" {
   source = "./modules/app"
   project_name            = var.project_name
-  
-  cluster_name           = var.project_name
-  cluster_endpoint       = module.eks_cluster.cluster_endpoint
-  cluster_ca_certificate = module.eks_cluster.cluster_ca_certificate
-  cluster_token          = module.eks_cluster.cluster_token
 
   database_host      = module.rds.rds_endpoint
   database_username  = var.database_credentials.username
@@ -89,10 +82,10 @@ module "app" {
   database_port      = var.database_credentials.port
   database_name      = var.database_credentials.name
 
-  lb_service_name    = "${var.project_name}-svc"
-  lb_service_port    = 8000
+  redis_host         = module.elasticache.primary_endpoint_address
+  redis_port         = var.redis_port
 
-  depends_on        = [module.eks_cluster, module.rds]
+  depends_on        = [module.eks_cluster, module.rds, module.elasticache]
 }
 
 
@@ -101,10 +94,12 @@ module "authorizer" {
   source = "./modules/authorizer"
   project_name            = var.project_name
   region                  = var.region
-  lb_service_name         = "${var.project_name}-svc"
-  lb_service_port         = 8000
+  lb_service_name_orders  = module.app.lb_service_name_orders
+  lb_service_port_orders  = module.app.lb_service_port_orders
+  lb_service_name_production = module.app.lb_service_name_production
+  lb_service_port_production = module.app.lb_service_port_production
   vpc_id                  = module.vpc_for_eks.vpc_id
-  private_subnet_ids       = module.vpc_for_eks.private_subnet_ids
+  private_subnet_ids      = module.vpc_for_eks.private_subnet_ids
   environment             = "dev"
   cognito_user_name       = var.cognito_test_user.username
   cognito_user_password   = var.cognito_test_user.password

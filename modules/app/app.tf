@@ -120,53 +120,6 @@ spec:
       labels:
         app: msvc-orders
     spec:
-      initContainers:
-        - name: init
-          image: ${local.msvc_orders_init_image}
-          imagePullPolicy: Always
-          securityContext:
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
-            runAsUser: 10000
-            capabilities:
-              drop:
-                - ALL
-          resources:
-            requests:
-              cpu: 10m
-              memory: 25Mi
-            limits:
-              cpu: 100m
-              memory: 100Mi
-          env:
-            - name: PORT
-              value: "8080"
-            - name: DB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: ${var.project_name}-secret
-                  key: DB_HOST
-            - name: DB_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: ${var.project_name}-secret
-                  key: DB_PORT
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: ${var.project_name}-secret
-                  key: DB_USER
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: ${var.project_name}-secret
-                  key: DB_PASSWORD
-            - name: DB_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: ${var.project_name}-secret
-                  key: DB_NAME
       containers:
         - name: msvc-orders
           image: ${local.msvc_orders_image}

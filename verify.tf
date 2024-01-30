@@ -17,32 +17,34 @@ resource "null_resource" "Verification" {
       #echo  "\n-------------------------------TOKEN------------------------------------------" >> /tmp/verification.txt
       #echo "$token" >> /tmp/verification.txt
 
-      test_endpoint="${module.authorizer.apigw_endpoint}/v1/categories/all"
-
-      test_body='{
-        "limit": 10,
-        "offset": 0,
-        "user_id": "123e4567-e89b-12d3-a456-426614174000"
-        }'
+      test_endpoint="${module.authorizer.apigw_endpoint}/category/9764bd96-3bcf-11ee-be56-0242ac120002"
+      #test_endpoint="${module.authorizer.apigw_endpoint}/category/all"
 
       echo  "\n-------------------------TEST WITHOUT TOKEN------------------------------------"  >> /tmp/verification.txt
 
-      test_without_token="curl --location $test_endpoint -s \
-        --header 'Content-Type: application/json' \
-        --data '$test_body'"
+      test_without_token="curl -X GET --location $test_endpoint -s \
+        --header 'Content-Type: application/json'"
 
       eval "$test_without_token" >> /tmp/verification.txt 
 
 
       echo  "\n-------------------------TEST WITH TOKEN-------------------------------------" >> /tmp/verification.txt
 
-      test_with_token="curl --location $test_endpoint -s \
+      test_with_token="curl -X GET --location $test_endpoint -s \
         --header 'Authorization: $token'  \
-        --header 'Content-Type: application/json' \
-        --data '$test_body'"
+        --header 'Content-Type: application/json'"
 
       eval "$test_with_token" >> /tmp/verification.txt
-    EOT
+
+      echo  "\n-------------------------OBSERVACAO-----------------------------------------------"  >> /tmp/verification.txt
+      echo  " O esperado é o que teste sem o token retorne 'Forbidden' e o teste com o token "  >> /tmp/verification.txt
+      echo  " retorne os dados da categoria.  Caso o teste com o token tenha retornado 'System "  >> /tmp/verification.txt
+      echo  " Unavailable', possivelemnte não houve tempo para a total inicialização do sistema."  >> /tmp/verification.txt
+      echo  " Nesse caso, repita novamente a verificação executando o script verify.sh."  >> /tmp/verification.txt
+      echo  " Antes da execução do script verify.sh, edite o script para atualizar as credenciais"  >> /tmp/verification.txt
+      echo  " do Cognito e a URL do API GW com os dados fornecidos abaixo"  >> /tmp/verification.txt
+      echo  "-----------------------------------------------------------------------------------\n"  >> /tmp/verification.txt
+  EOT
   }
   depends_on = [module.authorizer]
 

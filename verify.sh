@@ -1,29 +1,33 @@
 #!/bin/bash
 
-cognito__user_pool_id="us-east-1_RbpQ7DOCJ"
-cognito_appclient_id="429l0nbjc48e71h21nt90hbq4m" 
+######################## IMPORTANTE ########################################################
+#  Antes de executar esse script, atualize os dados abaixo com as informações fornecidas pelo
+#  terraform apply
+############################################################################################
+apigw_endpoint="https://nvr7kw1wag.execute-api.us-east-1.amazonaws.com"
+cognito_client_id="8nj6snaqbaufididvvoas87l0"
+cognito_url="https://techchallenge-dev.auth.us-east-1.amazoncognito.com"
+cognito_userpool_id="us-east-1_8nesQwAtr"
+
+
 cognito_username="11122233300"
 cognito_password="F@ap1234"
-api_gw_url="https://zzzz3tnga7.execute-api.us-east-1.amazonaws.com"
 
-token=$(aws cognito-idp admin-initiate-auth --user-pool-id $cognito__user_pool_id \
-  --client-id $cognito_appclient_id \
+
+token=$(aws cognito-idp admin-initiate-auth --user-pool-id $cognito_userpool_id \
+  --client-id $cognito_client_id \
   --auth-flow ADMIN_NO_SRP_AUTH \
   --auth-parameters USERNAME=$cognito_username,PASSWORD=$cognito_password \
   | jq -r '.AuthenticationResult.AccessToken')
 
 
-echo -e "\n-------------------------------TOKEN------------------------------------------" 
-echo "$token" 
+#echo -e "\n-------------------------------TOKEN------------------------------------------" 
+#echo "$token" 
 
-#test_endpoint="$api_gw_url/v1/categories/all"
-test_endpoint="$api_gw_url/test"
+test_endpoint="$apigw_endpoint/category/9764bd96-3bcf-11ee-be56-0242ac120002"
+#test_endpoint="$apigw_endpoint/category/all"
 
-test_body='{
-  "limit": 10,
-  "offset": 0,
-  "user_id": "123e4567-e89b-12d3-a456-426614174000"
-  }'
+test_body='{limit: 10, offset: 0}'
 
 echo -e "\n-------------------------TEST WITHOUT TOKEN------------------------------------"  
 

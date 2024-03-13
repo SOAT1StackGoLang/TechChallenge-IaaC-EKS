@@ -42,7 +42,7 @@ resource "aws_cognito_user_pool_client" "cognito_appclient" {
   explicit_auth_flows           = ["ALLOW_USER_PASSWORD_AUTH", "ALLOW_ADMIN_USER_PASSWORD_AUTH", "ALLOW_CUSTOM_AUTH", "ALLOW_USER_SRP_AUTH", "ALLOW_REFRESH_TOKEN_AUTH"]
   enable_token_revocation       = true
 
-  callback_urls                        = ["https://${aws_apigatewayv2_api.api.api_endpoint}"]
+  callback_urls                        = ["${aws_apigatewayv2_api.api.api_endpoint}"]
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes                 = ["email", "openid", "phone", "profile"]

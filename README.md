@@ -2,7 +2,7 @@
 
 ## Descrição
 
-Esse repositório contém os códigos Terraform para deployment da infraestrutura na AWS utilizada na fase4 do techchallenge, bem como provionamento de pods kubernetes da aplicação.
+Esse repositório contém os códigos Terraform para deployment da infraestrutura na AWS utilizada na fase5 do techchallenge, bem como provionamento de pods kubernetes da aplicação.
 
 Todo provisionamento foi feito asssumindo-se que AWS Academy está sendo utilizado.  AWS Academy não permite a criação de IAM roles ou qualquer outro recurso relacioado a AWS IAM. Sendo assim, em todos os módulos é utilizado o role LabRole pre-existente na AWS Academy.
 

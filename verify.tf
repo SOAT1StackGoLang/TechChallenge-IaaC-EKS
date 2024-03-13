@@ -44,6 +44,8 @@ resource "null_resource" "Verification" {
       echo  " Antes da execução do script verify.sh, edite o script para atualizar as credenciais"  >> /tmp/verification.txt
       echo  " do Cognito e a URL do API GW com os dados fornecidos abaixo"  >> /tmp/verification.txt
       echo  "-----------------------------------------------------------------------------------\n"  >> /tmp/verification.txt
+      echo "Orders Swagger URL: ${module.authorizer.apigw_endpoint}/swagger/index.html" >> /tmp/verification.txt
+      echo "Production Swagger URL: ${module.authorizer.apigw_endpoint}/production/swagger/index.html" >> /tmp/verification.txt
   EOT
   }
   depends_on = [module.authorizer]

@@ -81,9 +81,9 @@ output "apigw_endpoint" {
 # From Module Elasticache
 #--------------------------------------------------------------------------
 
-output "primary_endpoint_address"{
+output "primary_endpoint_address" {
   value = module.elasticache.primary_endpoint_address
-} 
+}
 
 output "reader_endpoint_address" {
   value = module.elasticache.reader_endpoint_address

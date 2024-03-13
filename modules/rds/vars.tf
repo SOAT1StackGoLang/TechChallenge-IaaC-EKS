@@ -5,17 +5,17 @@ variable "region" {
 }
 
 variable "availability_zone" {
-  type  = string
+  type        = string
   description = "Availability zones for the RDS instance"
 }
 
-variable vpc_id {
+variable "vpc_id" {
   description = "VPC ID from which belogs the subnets"
   type        = string
 }
 
 variable "database_subnetids" {
-  type = list(string)
+  type        = list(string)
   description = "List of subnet IDs."
 }
 

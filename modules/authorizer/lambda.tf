@@ -45,9 +45,9 @@ resource "aws_lambda_function" "authorizer_lambda" {
     }
   }
   depends_on = [aws_cognito_user_pool_client.cognito_appclient,
-                aws_cognito_user_pool.user_pool,
-                null_resource.download_file
-               ]
+    aws_cognito_user_pool.user_pool,
+    null_resource.download_file
+  ]
 
 }
 

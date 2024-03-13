@@ -23,11 +23,11 @@ on:
       TF_STATE_BUCKET:
         description: 'Terraform State Bucket'
         required: false
-        default: 's1sg-tc-terraform-state-bucket-fase4'
+        default: 's1sg-tc-terraform-state-bucket-fase5'
       TF_STATE_KEY:
         description: 'Terraform State Key'
         required: false
-        default: 's1sg-tc.tfstate'
+        default: 'terraform.tfstate'
 jobs:
   setup:
     runs-on: ubuntu-latest

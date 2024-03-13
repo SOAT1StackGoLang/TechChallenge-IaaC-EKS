@@ -84,12 +84,12 @@ aws sts get-caller-identity
 
 ## Create the S3 bucket that will hold the terraform state
 # create the bucket
-aws s3api create-bucket --bucket s1sg-tc-terraform-state-bucket-fase4 --region us-east-1
+aws s3api create-bucket --bucket s1sg-tc-terraform-state-bucket-fase5 --region us-east-1
 #account_id=$(aws sts get-caller-identity --query 'Account' --output text)
 #aws s3api create-bucket --bucket s1sg-tc-terraform-state-bucket-$account_id --region us-east-1
 
 echo "run the following command to initiate terraform"
-echo "terraform init -backend-config=\"bucket=s1sg-tc-terraform-state-bucket-fase4\" -backend-config=\"key=terraform.tfstate\" -backend-config=\"region=us-east-1\" -reconfigure"
+echo "terraform init -backend-config=\"bucket=s1sg-tc-terraform-state-bucket-fase5\" -backend-config=\"key=terraform.tfstate\" -backend-config=\"region=us-east-1\" -reconfigure"
 #echo "terraform init -backend-config=\"bucket=s1sg-tc-terraform-state-bucket-$account_id\" -backend-config=\"key=terraform.tfstate\" -backend-config=\"region=us-east-1\""
 
 # Cleanup and delete the user

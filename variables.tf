@@ -5,8 +5,8 @@ variable "region" {
 }
 
 variable "availability_zones" {
-  type  = list(string)
-  default = ["us-east-1a", "us-east-1b"]
+  type        = list(string)
+  default     = ["us-east-1a", "us-east-1b"]
   description = "List of availability zones for the selected region"
 }
 
@@ -18,26 +18,26 @@ variable "vpc_cidr_block" {
 }
 
 variable "project_name" {
-  type        = string
-  default     = "techchallenge"
+  type    = string
+  default = "techchallenge"
 }
 
 variable "database_credentials" {
   description = "Credentials for database creation"
 
   type = object({
-    username  = string
-    password  = string
-    port      = string
-    name      = string
+    username = string
+    password = string
+    port     = string
+    name     = string
   })
 
   default = {
-    username  = "databaseteste"
-    password  = "password"
-    port      = 5432
-    name      = "lanchonete"
-    } 
+    username = "databaseteste"
+    password = "password"
+    port     = 5432
+    name     = "lanchonete"
+  }
 }
 
 variable "redis_port" {
@@ -56,7 +56,7 @@ variable "cognito_test_user" {
   })
 
   default = {
-      username = "11122233300"
-      password = "F@ap1234"
-    } 
+    username = "11122233300"
+    password = "F@ap1234"
+  }
 }

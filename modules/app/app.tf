@@ -82,11 +82,7 @@ metadata:
   namespace: ${local.namespace}
 type: Opaque
 stringData:
-  DB_HOST: "${local.postgres_host}"
-  DB_PORT: "${local.postgres_port}"
-  DB_USER: "${local.postgres_user}"
-  DB_PASSWORD: "${local.postgres_password}" 
-  DB_NAME: "${local.postgres_db}"
+  DB_URI: "host=${local.postgres_host} port=${local.postgres_port} user=${local.postgres_user} password=${local.postgres_password} dbname=${local.postgres_db} sslmode=require"
 
 YAML
 }
@@ -166,31 +162,9 @@ spec:
               value: "${local.msvc_payments_uri}"
             - name: PRODUCTION_URI
               value: "${local.msvc_production_uri}"
-            - name: DB_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: ${var.project_name}-secret
-                  key: DB_HOST
-            - name: DB_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: ${var.project_name}-secret
-                  key: DB_PORT
-            - name: DB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: ${var.project_name}-secret
-                  key: DB_USER
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: ${var.project_name}-secret
-                  key: DB_PASSWORD
-            - name: DB_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: ${var.project_name}-secret
-                  key: DB_NAME
+          envFrom:
+            - secretRef:
+                name: ${var.project_name}-secret
           ports:
             - containerPort: 8080
               name: web

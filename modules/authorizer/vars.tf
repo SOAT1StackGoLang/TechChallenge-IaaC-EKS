@@ -1,10 +1,10 @@
 
 variable "project_name" {
   description = "The name of the project"
-  type = string
+  type        = string
 }
 
-variable vpc_id {
+variable "vpc_id" {
   description = "VPC ID from which belogs the subnets"
   type        = string
 }
@@ -15,7 +15,7 @@ variable "region" {
 }
 
 variable "private_subnet_ids" {
-  type = list(string)
+  type        = list(string)
   description = "List of subnet IDs."
 }
 
@@ -26,25 +26,25 @@ variable "environment" {
 
 
 variable "lb_service_name_orders" {
-  type = string
+  type        = string
   description = "Name of the Load Balancer K8s service that exposes the orders microservices"
 }
 
 
 variable "lb_service_port_orders" {
-  type = number
+  type        = number
   description = "Port exposed of the Load Balancer K8s service associated to the orders microservices"
 }
 
 
 variable "lb_service_name_production" {
-  type = string
+  type        = string
   description = "Name of the Load Balancer K8s service that exposes the production microservices"
 }
 
 
 variable "lb_service_port_production" {
-  type = number
+  type        = number
   description = "Port exposed of the Load Balancer K8s service associated to the production microservices"
 }
 

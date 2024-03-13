@@ -1,6 +1,6 @@
 variable "project_name" {
   description = "The name of the project"
-  type = string
+  type        = string
 }
 
 variable "database_username" {
@@ -15,7 +15,7 @@ variable "database_password" {
 
 variable "database_port" {
   description = "port used by postgres database"
-  type    = number
+  type        = number
 }
 
 variable "database_host" {
@@ -30,7 +30,7 @@ variable "database_name" {
 
 variable "redis_port" {
   description = "port used by Redis database"
-  type    = number
+  type        = number
 }
 
 variable "redis_host" {

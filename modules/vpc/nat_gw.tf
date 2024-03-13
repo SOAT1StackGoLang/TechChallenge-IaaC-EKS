@@ -1,6 +1,6 @@
 # Create Elastic IP
 resource "aws_eip" "main" {
-  vpc              = true
+  vpc = true
 }
 
 # Create NAT Gateway
@@ -21,7 +21,7 @@ resource "aws_nat_gateway" "main" {
 #}
 
 resource "aws_route_table" "private" {
-  vpc_id = "${aws_vpc.custom_vpc.id}"
+  vpc_id = aws_vpc.custom_vpc.id
 
   route {
     cidr_block     = "0.0.0.0/0"
@@ -36,7 +36,7 @@ resource "aws_route_table" "private" {
 
 # Route table and subnet associations
 resource "aws_route_table_association" "private" {
-  count = length(var.availability_zones)
-  subnet_id      = "${aws_subnet.private_subnet[count.index].id}"
-  route_table_id = "${aws_route_table.private.id}"
+  count          = length(var.availability_zones)
+  subnet_id      = aws_subnet.private_subnet[count.index].id
+  route_table_id = aws_route_table.private.id
 }

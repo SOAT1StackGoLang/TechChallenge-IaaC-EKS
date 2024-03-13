@@ -1,6 +1,6 @@
 variable "project_name" {
   description = "The name of the project"
-  type = string
+  type        = string
 }
 
 variable "vpc_tag_name" {
@@ -9,8 +9,8 @@ variable "vpc_tag_name" {
 }
 
 variable "vpc_cidr_block" {
-  type        = string
-  default     = "10.0.0.0/16"
+  type    = string
+  default = "10.0.0.0/16"
 }
 
 variable "private_subnet_cidr_blocks" {
@@ -20,25 +20,25 @@ variable "private_subnet_cidr_blocks" {
 }
 
 variable "public_subnet_cidr_blocks" {
-  type = list(string)
+  type        = list(string)
   default     = ["10.0.2.0/24", "10.0.3.0/24"]
   description = "CIDR block range for the public subnet"
 }
 
 variable "private_subnet_tag_name" {
   type        = string
-  default = "Custom Kubernetes cluster private subnet"
+  default     = "Custom Kubernetes cluster private subnet"
   description = "Name tag for the private subnet"
 }
 
 variable "public_subnet_tag_name" {
   type        = string
-  default = "Custom Kubernetes cluster public subnet"
+  default     = "Custom Kubernetes cluster public subnet"
   description = "Name tag for the public subnet"
 }
 
 variable "availability_zones" {
-  type  = list(string)
+  type        = list(string)
   description = "List of availability zones for the selected region"
 }
 

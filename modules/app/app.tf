@@ -22,8 +22,8 @@ locals {
   lb_service_name_production = "lb-production-svc"
   lb_service_port_production = 8082
 
-  msvc_orders_port     = 8080  
-  msvc_payments_port   = 8081  
+  msvc_orders_port     = 8080
+  msvc_payments_port   = 8081
   msvc_production_port = 8082
 
   msvc_orders_svc     = "msvc-orders-svc"
@@ -36,14 +36,14 @@ locals {
   msvc_production_uri = "http://${local.msvc_production_svc}.${local.namespace}.svc.cluster.local:${local.msvc_production_port}"
 
   kvstore_db_msvc_orders     = 10
-  kvstore_db_msvc_payments   = 11  
+  kvstore_db_msvc_payments   = 11
   kvstore_db_msvc_production = 12
 
-  postgres_host     = "${var.database_host}"
-  postgres_port     = "${var.database_port}"
-  postgres_user     = "${var.database_username}"
-  postgres_password = "${var.database_password}"
-  postgres_db       = "${var.database_name}"
+  postgres_host     = var.database_host
+  postgres_port     = var.database_port
+  postgres_user     = var.database_username
+  postgres_password = var.database_password
+  postgres_db       = var.database_name
 }
 
 
@@ -52,7 +52,7 @@ locals {
 #---------------------------------------------------------------------------------------------------
 
 resource "kubectl_manifest" "namespace" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 
 apiVersion: v1
 kind: Namespace
@@ -73,7 +73,7 @@ YAML
 #---------------------------------------------------------------------------------------------------
 
 resource "kubectl_manifest" "secrets" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 
 apiVersion: v1
 kind: Secret
@@ -92,7 +92,7 @@ YAML
 #---------------------------------------------------------------------------------------------------
 
 resource "kubectl_manifest" "msvc_orders_deployment" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 
 apiVersion: apps/v1
 kind: Deployment
@@ -175,7 +175,7 @@ YAML
 
 
 resource "kubectl_manifest" "msvc_orders_service" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 
 apiVersion: v1
 kind: Service
@@ -200,7 +200,7 @@ YAML
 #---------------------------------------------------------------------------------------------------
 
 resource "kubectl_manifest" "msvc_payments_deployment" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 
 apiVersion: apps/v1
 kind: Deployment
@@ -280,7 +280,7 @@ YAML
 
 
 resource "kubectl_manifest" "msvc_payments_service" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 
 apiVersion: v1
 kind: Service
@@ -306,7 +306,7 @@ YAML
 #---------------------------------------------------------------------------------------------------
 
 resource "kubectl_manifest" "msvc_production_deployment" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 
 apiVersion: apps/v1
 kind: Deployment
@@ -386,7 +386,7 @@ YAML
 
 
 resource "kubectl_manifest" "msvc_production_service" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 
 apiVersion: v1
 kind: Service
@@ -412,7 +412,7 @@ YAML
 #---------------------------------------------------------------------------------------------------
 
 resource "kubectl_manifest" "lb-orders" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 
 apiVersion: v1
 kind: Service
@@ -437,7 +437,7 @@ YAML
 
 
 resource "kubectl_manifest" "lb-production" {
-    yaml_body = <<YAML
+  yaml_body = <<YAML
 
 apiVersion: v1
 kind: Service

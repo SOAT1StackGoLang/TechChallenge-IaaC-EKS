@@ -16,14 +16,25 @@ resource "aws_security_group" "rds_security_group" {
   }
 }
 
+resource "aws_db_parameter_group" "postgres15_parameter_group" {
+  name   = "postgres15-param-group"
+  family = "postgres15"
+
+  parameter {
+    name  = "rds.force_ssl"
+    value = "1"
+  }
+}
+
 resource "aws_db_instance" "rds" {
-  identifier             = "techchallenge-rds"
+  identifier             = "techchallenge-rds-15"
   db_name                = var.database_name
-  instance_class         = "db.t2.micro"
+  instance_class         = "db.t4g.micro"
   allocated_storage      = 20
   storage_type           = "gp2"
   engine                 = "postgres"
-  engine_version         = "12.16"
+  engine_version         = "15.6"
+  auto_minor_version_upgrade = true
   skip_final_snapshot    = true
   publicly_accessible    = true
   vpc_security_group_ids = [aws_security_group.rds_security_group.id]
@@ -33,5 +44,6 @@ resource "aws_db_instance" "rds" {
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.id
   availability_zone      = var.availability_zone
   multi_az               = false
+  parameter_group_name   = aws_db_parameter_group.postgres15_parameter_group.name
 }
 

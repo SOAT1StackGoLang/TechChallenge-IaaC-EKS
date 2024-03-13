@@ -4,10 +4,10 @@
 #  Antes de executar esse script, atualize os dados abaixo com as informações fornecidas pelo
 #  terraform apply
 ############################################################################################
-apigw_endpoint="https://nvr7kw1wag.execute-api.us-east-1.amazonaws.com"
-cognito_client_id="8nj6snaqbaufididvvoas87l0"
+apigw_endpoint="https://kkocrau37a.execute-api.us-east-1.amazonaws.com"
+cognito_client_id="506edr8nrdug2q7qd2cg4nc9m8"
 cognito_url="https://techchallenge-dev.auth.us-east-1.amazoncognito.com"
-cognito_userpool_id="us-east-1_8nesQwAtr"
+cognito_userpool_id="us-east-1_Lz9dsueBk"
 
 
 cognito_username="11122233300"
@@ -21,8 +21,8 @@ token=$(aws cognito-idp admin-initiate-auth --user-pool-id $cognito_userpool_id 
   | jq -r '.AuthenticationResult.AccessToken')
 
 
-#echo -e "\n-------------------------------TOKEN------------------------------------------" 
-#echo "$token" 
+echo -e "\n-------------------------------TOKEN------------------------------------------" 
+echo "$token" 
 
 test_endpoint="$apigw_endpoint/category/9764bd96-3bcf-11ee-be56-0242ac120002"
 #test_endpoint="$apigw_endpoint/category/all"
@@ -46,4 +46,10 @@ test_with_token="curl -X GET --location $test_endpoint -s \
   --data '$test_body'"
 
 eval "$test_with_token" 
+
+# Swagger URL
+echo -e "\n-------------------------SWAGGER URL-------------------------------------"
+echo -e "Orders Swagger URL: $apigw_endpoint/swagger/index.html"
+echo -e "Production Swagger URL: $apigw_endpoint/production/swagger/index.html"
+
 

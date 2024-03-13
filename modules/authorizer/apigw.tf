@@ -96,6 +96,14 @@ resource "aws_apigatewayv2_route" "apigw_route_orders" {
   depends_on         = [aws_apigatewayv2_integration.api_integration_orders]
 }
 
+# API GW route for /swagger/* for orders
+resource "aws_apigatewayv2_route" "apigw_route_swagger_orders" {
+  api_id             = aws_apigatewayv2_api.api.id
+  route_key          = "ANY /swagger/{proxy+}"
+  target             = "integrations/${aws_apigatewayv2_integration.api_integration_orders.id}"
+  authorization_type = "NONE"
+  depends_on         = [aws_apigatewayv2_integration.api_integration_orders]
+}
 
 
 
@@ -127,6 +135,16 @@ resource "aws_apigatewayv2_integration" "api_integration_production" {
                ]
 }
 
+# API GW route with ANY method to the /production/ without proxy
+resource "aws_apigatewayv2_route" "apigw_route_production_root" {
+  api_id             = aws_apigatewayv2_api.api.id
+  route_key         = "ANY /production"
+  target             = "integrations/${aws_apigatewayv2_integration.api_integration_production.id}"
+  authorization_type = "CUSTOM"
+  authorizer_id      = aws_apigatewayv2_authorizer.api_authorizer.id
+  depends_on         = [aws_apigatewayv2_integration.api_integration_production]
+}
+
 # API GW route with ANY method
 resource "aws_apigatewayv2_route" "apigw_route_production" {
   api_id             = aws_apigatewayv2_api.api.id
@@ -134,6 +152,15 @@ resource "aws_apigatewayv2_route" "apigw_route_production" {
   target             = "integrations/${aws_apigatewayv2_integration.api_integration_production.id}"
   authorization_type = "CUSTOM"
   authorizer_id      = aws_apigatewayv2_authorizer.api_authorizer.id
+  depends_on         = [aws_apigatewayv2_integration.api_integration_production]
+}
+
+# API GW route for /production/swagger/* for production
+resource "aws_apigatewayv2_route" "apigw_route_swagger_production" {
+  api_id             = aws_apigatewayv2_api.api.id
+  route_key          = "ANY /production/swagger/{proxy+}"
+  target             = "integrations/${aws_apigatewayv2_integration.api_integration_production.id}"
+  authorization_type = "NONE"
   depends_on         = [aws_apigatewayv2_integration.api_integration_production]
 }
 

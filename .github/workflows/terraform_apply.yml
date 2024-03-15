@@ -28,26 +28,18 @@ on:
         description: 'Terraform State Key'
         required: false
         default: 'terraform.tfstate'
-      image_registry:
-        description: 'The registry where the image is stored'
-        required: false
-        default: 'ghcr.io/soat1stackgolang'
       msvc_orders_image_tag:
-        description: 'The tag of the image for the orders microservice'
+        description: 'The tag of the image for the orders microservice without msvc'
         required: false
-        default: 'msvc-develop'
-      msvc_orders_migs_image_tag:
-        description: 'The tag of the image for the orders microservice'
-        required: false
-        default: 'migs-develop'
+        default: 'develop'
       msvc_payments_image_tag:
-        description: 'The tag of the image for the payments microservice'
+        description: 'The tag of the image for the payments microservice without msvc'
         required: false
-        default: 'msvc-develop'
+        default: 'develop'
       msvc_production_image_tag:
-        description: 'The tag of the image for the products microservice'
+        description: 'The tag of the image for the products microservice without msvc'
         required: false
-        default: 'msvc-develop'
+        default: 'develop'
       
 jobs:
   setup:
@@ -75,8 +67,8 @@ jobs:
       run: terraform apply -auto-approve
       env:
         TF_VAR_environment: ${{ github.event.inputs.DEPLOY_ENVIRONMENT }}
-        TF_VAR_image_registry: ${{ github.event.inputs.image_registry }}
-        TF_VAR_msvc_orders_image_tag: ${{ github.event.inputs.msvc_orders_image_tag }}
-        TF_VAR_msvc_orders_migs_image_tag: ${{ github.event.inputs.msvc_orders_migs_image_tag }}
-        TF_VAR_msvc_payments_image_tag: ${{ github.event.inputs.msvc_payments_image_tag }}
-        TF_VAR_msvc_production_image_tag: ${{ github.event.inputs.msvc_production_image_tag }}
+        TF_VAR_image_registry: "ghcr.io/soat1stackgolang"
+        TF_VAR_msvc_orders_image_tag: "msvc-${{ github.event.inputs.msvc_orders_image_tag }}" # The tag of the image for the orders microservice without msvc
+        TF_VAR_msvc_orders_migs_image_tag: "migs-${{ github.event.inputs.msvc_orders_image_tag }}" # The tag of the image for the orders microservice with msvc
+        TF_VAR_msvc_payments_image_tag: "msvc-${{ github.event.inputs.msvc_payments_image_tag }}" # The tag of the image for the payments microservice without msvc
+        TF_VAR_msvc_production_image_tag: "msvc-${{ github.event.inputs.msvc_production_image_tag }}" # The tag of the image for the products microservice without msvc

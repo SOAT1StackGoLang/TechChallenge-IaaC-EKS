@@ -11,11 +11,11 @@ terraform {
 
 locals {
   namespace = var.project_name
-
-  msvc_orders_init_image = "ghcr.io/soat1stackgolang/msvc-orders:migs-debug-develop"
-  msvc_orders_image      = "ghcr.io/soat1stackgolang/msvc-orders:debug-develop"
-  msvc_payments_image    = "ghcr.io/soat1stackgolang/msvc-payments:debug-develop"
-  msvc_production_image  = "ghcr.io/soat1stackgolang/msvc-production:debug-develop"
+  
+  msvc_orders_migs_image = "${var.image_registry}/msvc-orders:${var.msvc_orders_migs_image_tag}"
+  msvc_orders_image      = "${var.image_registry}/msvc-orders:${var.msvc_orders_image_tag}"
+  msvc_payments_image    = "${var.image_registry}/msvc-payments:${var.msvc_payments_image_tag}"
+  msvc_production_image  = "${var.image_registry}/msvc-production:${var.msvc_production_image_tag}"
 
   lb_service_name_orders     = "lb-orders-svc"
   lb_service_port_orders     = 8080
@@ -116,6 +116,28 @@ spec:
       labels:
         app: msvc-orders
     spec:
+      initContainers:
+        - name: msvc-orders-migs
+          image: ${local.msvc_orders_migs_image}
+          imagePullPolicy: Always
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 10000
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 25Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          envFrom:
+            - secretRef:
+                name: ${var.project_name}-secret
       containers:
         - name: msvc-orders
           image: ${local.msvc_orders_image}

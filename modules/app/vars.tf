@@ -38,3 +38,32 @@ variable "redis_host" {
   type    = string
 }
 
+variable "image_registry" {
+  description = "The registry where the image is stored"
+  type        = string
+  default = "ghcr.io/soat1stackgolang"
+}
+
+variable "msvc_orders_image_tag" {
+  description = "The tag of the image for the orders microservice"
+  type        = string
+  default = "msvc-develop"
+}
+
+variable "msvc_orders_migs_image_tag" {
+  description = "The tag of the image for the orders microservice"
+  type        = string
+  default = "migs-develop"
+}
+
+variable "msvc_payments_image_tag" {
+  description = "The tag of the image for the payments microservice"
+  type        = string
+  default = "msvc-develop"
+}
+
+variable "msvc_production_image_tag" {
+  description = "The tag of the image for the products microservice"
+  type        = string
+  default = "msvc-develop"
+}

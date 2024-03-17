@@ -63,6 +63,9 @@ jobs:
     - name: Terraform Init
       run: terraform init -upgrade -backend-config="bucket=${{ github.event.inputs.TF_STATE_BUCKET }}" -backend-config="key=${{ github.event.inputs.TF_STATE_KEY }}" -backend-config="region=${{ github.event.inputs.AWS_DEFAULT_REGION }}"
 
+    - name: Set redeploy annotation
+      run: echo "TF_VAR_redeploy_annotation=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+
     - name: Terraform Apply
       run: terraform apply -auto-approve
       env:
@@ -72,4 +75,3 @@ jobs:
         TF_VAR_msvc_orders_migs_image_tag: "migs-${{ github.event.inputs.msvc_orders_image_tag }}" # The tag of the image for the orders microservice with msvc
         TF_VAR_msvc_payments_image_tag: "msvc-${{ github.event.inputs.msvc_payments_image_tag }}" # The tag of the image for the payments microservice without msvc
         TF_VAR_msvc_production_image_tag: "msvc-${{ github.event.inputs.msvc_production_image_tag }}" # The tag of the image for the products microservice without msvc
-        TF_VAR_redeploy_annotation: $(date -u +\"%Y-%m-%dT%H:%M:%SZ\")

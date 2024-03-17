@@ -72,3 +72,4 @@ jobs:
         TF_VAR_msvc_orders_migs_image_tag: "migs-${{ github.event.inputs.msvc_orders_image_tag }}" # The tag of the image for the orders microservice with msvc
         TF_VAR_msvc_payments_image_tag: "msvc-${{ github.event.inputs.msvc_payments_image_tag }}" # The tag of the image for the payments microservice without msvc
         TF_VAR_msvc_production_image_tag: "msvc-${{ github.event.inputs.msvc_production_image_tag }}" # The tag of the image for the products microservice without msvc
+        TF_VAR_redeploy_annotation: $(date -u +\"%Y-%m-%dT%H:%M:%SZ\")

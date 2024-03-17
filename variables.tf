@@ -60,3 +60,9 @@ variable "cognito_test_user" {
     password = "F@ap1234"
   }
 }
+
+variable "redeploy_annotation" {
+  description = "Annotation to trigger a redeploy"
+  type        = string
+  default = "none"
+}

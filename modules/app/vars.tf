@@ -67,3 +67,9 @@ variable "msvc_production_image_tag" {
   type        = string
   default = "msvc-develop"
 }
+
+variable "redeploy_annotation" {
+  description = "Annotation to trigger a redeploy"
+  type        = string
+  default = "none"
+}

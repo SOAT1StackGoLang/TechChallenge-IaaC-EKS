@@ -44,6 +44,9 @@ locals {
   postgres_user     = var.database_username
   postgres_password = var.database_password
   postgres_db       = var.database_name
+
+  ### deployment annotations time
+  redeploy_annotation = var.redeploy_annotation
 }
 
 
@@ -101,6 +104,8 @@ metadata:
   namespace: ${local.namespace}
   labels:
     app: msvc-orders
+  annotations:
+    kubectl.kubernetes.io/restartedAt: ${local.redeploy_annotation}
 spec:
   selector:
     matchLabels:
@@ -115,6 +120,8 @@ spec:
     metadata:
       labels:
         app: msvc-orders
+      annotations:
+        kubectl.kubernetes.io/restartedAt: ${local.redeploy_annotation}
     spec:
       initContainers:
         - name: msvc-orders-migs
@@ -232,6 +239,8 @@ metadata:
   namespace: ${local.namespace}
   labels:
     app: msvc-payments
+  annotations:
+    kubectl.kubernetes.io/restartedAt: ${local.redeploy_annotation}
 spec:
   selector:
     matchLabels:
@@ -246,6 +255,8 @@ spec:
     metadata:
       labels:
         app: msvc-payments
+      annotations:
+        kubectl.kubernetes.io/restartedAt: ${local.redeploy_annotation}
     spec:
       containers:
         - name: msvc-payments
@@ -339,6 +350,8 @@ metadata:
   namespace: ${local.namespace}
   labels:
     app: msvc-production
+  annotations:
+    kubectl.kubernetes.io/restartedAt: ${local.redeploy_annotation}
 spec:
   selector:
     matchLabels:
@@ -353,6 +366,8 @@ spec:
     metadata:
       labels:
         app: msvc-production
+      annotations:
+        kubectl.kubernetes.io/restartedAt: ${local.redeploy_annotation}
     spec:
       containers:
         - name: msvc-production
@@ -408,19 +423,6 @@ spec:
       restartPolicy: Always
 YAML
 }
-
-## Deployments rollout restart
-resource "null_resource" "rollout_restart" {
-  depends_on = [ kubectl_manifest.msvc_orders_deployment, kubectl_manifest.msvc_payments_deployment, kubectl_manifest.msvc_production_deployment ]
-  triggers = {
-    always_run = timestamp()
-  }
-
-provisioner "local-exec" {
-  command = "kubectl rollout restart deployment/msvc-orders -n ${local.namespace}; kubectl rollout restart deployment/msvc-payments -n ${local.namespace}; kubectl rollout restart deployment/msvc-production -n ${local.namespace}"
-}
-}
-
 
 
 resource "kubectl_manifest" "msvc_production_service" {

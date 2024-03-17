@@ -142,6 +142,7 @@ spec:
         - name: msvc-orders
           image: ${local.msvc_orders_image}
           imagePullPolicy: Always
+          terminationGracePeriodSeconds: 15
           securityContext:
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
@@ -250,6 +251,7 @@ spec:
         - name: msvc-payments
           image: ${local.msvc_payments_image}
           imagePullPolicy: Always
+          terminationGracePeriodSeconds: 15
           securityContext:
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
@@ -356,6 +358,7 @@ spec:
         - name: msvc-production
           image: ${local.msvc_production_image}
           imagePullPolicy: Always
+          terminationGracePeriodSeconds: 15
           securityContext:
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false

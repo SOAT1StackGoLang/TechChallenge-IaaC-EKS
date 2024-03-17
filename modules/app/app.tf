@@ -406,6 +406,19 @@ spec:
 YAML
 }
 
+## Deployments rollout restart
+resource "null_resource" "rollout_restart" {
+  depends_on = [ kubectl_manifest.msvc_orders_deployment, kubectl_manifest.msvc_payments_deployment, kubectl_manifest.msvc_production_deployment ]
+  triggers = {
+    always_run = timestamp()
+  }
+
+provisioner "local-exec" {
+  command = "kubectl rollout restart deployment/msvc-orders -n ${local.namespace}; kubectl rollout restart deployment/msvc-payments -n ${local.namespace}; kubectl rollout restart deployment/msvc-production -n ${local.namespace}"
+}
+}
+
+
 
 resource "kubectl_manifest" "msvc_production_service" {
   yaml_body = <<YAML

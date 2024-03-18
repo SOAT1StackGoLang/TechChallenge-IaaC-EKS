@@ -85,6 +85,8 @@ module "app" {
   redis_host = module.elasticache.primary_endpoint_address
   redis_port = var.redis_port
 
+  redeploy_annotation = var.redeploy_annotation
+
   depends_on = [module.eks_cluster, module.rds, module.elasticache]
 }
 

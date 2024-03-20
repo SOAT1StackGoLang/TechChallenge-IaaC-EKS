@@ -11,11 +11,11 @@ terraform {
 
 locals {
   namespace = var.project_name
-
-  msvc_orders_init_image = "ghcr.io/soat1stackgolang/msvc-orders:migs-debug-develop"
-  msvc_orders_image      = "ghcr.io/soat1stackgolang/msvc-orders:debug-develop"
-  msvc_payments_image    = "ghcr.io/soat1stackgolang/msvc-payments:debug-develop"
-  msvc_production_image  = "ghcr.io/soat1stackgolang/msvc-production:debug-develop"
+  
+  msvc_orders_migs_image = "${var.image_registry}/msvc-orders:${var.msvc_orders_migs_image_tag}"
+  msvc_orders_image      = "${var.image_registry}/msvc-orders:${var.msvc_orders_image_tag}"
+  msvc_payments_image    = "${var.image_registry}/msvc-payments:${var.msvc_payments_image_tag}"
+  msvc_production_image  = "${var.image_registry}/msvc-production:${var.msvc_production_image_tag}"
 
   lb_service_name_orders     = "lb-orders-svc"
   lb_service_port_orders     = 8080
@@ -44,6 +44,9 @@ locals {
   postgres_user     = var.database_username
   postgres_password = var.database_password
   postgres_db       = var.database_name
+
+  ### deployment annotations time
+  redeploy_annotation = var.redeploy_annotation
 }
 
 
@@ -101,6 +104,8 @@ metadata:
   namespace: ${local.namespace}
   labels:
     app: msvc-orders
+  annotations:
+    kubectl.kubernetes.io/restartedAt: ${local.redeploy_annotation}
 spec:
   selector:
     matchLabels:
@@ -115,11 +120,36 @@ spec:
     metadata:
       labels:
         app: msvc-orders
+      annotations:
+        kubectl.kubernetes.io/restartedAt: ${local.redeploy_annotation}
     spec:
+      initContainers:
+        - name: msvc-orders-migs
+          image: ${local.msvc_orders_migs_image}
+          imagePullPolicy: Always
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 10000
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 25Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          envFrom:
+            - secretRef:
+                name: ${var.project_name}-secret
       containers:
         - name: msvc-orders
           image: ${local.msvc_orders_image}
           imagePullPolicy: Always
+          terminationGracePeriodSeconds: 15
           securityContext:
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
@@ -209,6 +239,8 @@ metadata:
   namespace: ${local.namespace}
   labels:
     app: msvc-payments
+  annotations:
+    kubectl.kubernetes.io/restartedAt: ${local.redeploy_annotation}
 spec:
   selector:
     matchLabels:
@@ -223,11 +255,14 @@ spec:
     metadata:
       labels:
         app: msvc-payments
+      annotations:
+        kubectl.kubernetes.io/restartedAt: ${local.redeploy_annotation}
     spec:
       containers:
         - name: msvc-payments
           image: ${local.msvc_payments_image}
           imagePullPolicy: Always
+          terminationGracePeriodSeconds: 15
           securityContext:
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
@@ -315,6 +350,8 @@ metadata:
   namespace: ${local.namespace}
   labels:
     app: msvc-production
+  annotations:
+    kubectl.kubernetes.io/restartedAt: ${local.redeploy_annotation}
 spec:
   selector:
     matchLabels:
@@ -329,11 +366,14 @@ spec:
     metadata:
       labels:
         app: msvc-production
+      annotations:
+        kubectl.kubernetes.io/restartedAt: ${local.redeploy_annotation}
     spec:
       containers:
         - name: msvc-production
           image: ${local.msvc_production_image}
           imagePullPolicy: Always
+          terminationGracePeriodSeconds: 15
           securityContext:
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
